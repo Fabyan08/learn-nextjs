@@ -1,0 +1,3 @@
+PARALLEL ROUTING:
+@files digunakan untuk import routing
+gunakan default.tsx untuk handle error jika halaman kosong
