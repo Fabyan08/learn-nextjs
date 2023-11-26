@@ -1,3 +1,7 @@
+"use client";
+import { getData } from "@/services/products";
+import Link from "next/link";
+
 // Buat Props detail product, tangkap params di mana di dalamnya ada slug tipe data string
 type ProductPageProps = {
   params: {
@@ -5,36 +9,11 @@ type ProductPageProps = {
   };
 };
 
-// Set Data FakeStoreAPI.com
-async function getData() {
-  // const res = await fetch("https://fakestoreapi.com/products", {
-  //   cache: "no-store",
-  //   next: {
-  //     tags: ["products"],
-  //   },
-  // }); //Ambil Data Dari FakeStoreAPI.com
-
-  // Ambil API LOKAL
-  const res = await fetch("http://localhost:3000/api/product", {
-    // cache: "force-cache", //Force-cache agar data lebih cepat dan memaksa Untuk Data Berubah Tiap Ada Perubahan
-    cache: "no-store", //Digunakan tidak cache (website lebih lemot)
-    next: {
-      tags: ["products"], //Tags - Data Apa?
-      // revalidate: 30 //Membuat data Revalidate atau berubah tiap 30 detik, untuk kejar performance
-    },
-  });
-  // END API LOKAL
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-}
-
 export default async function ProductPage(props: ProductPageProps) {
   // Tangkap Hasil Params dari DetailProduct
   const { params } = props;
 
-  const products = await getData();
+  const products = await getData("http://localhost:3000/api/product"); //TANGKAP URL DARI SERVICES
   console.log(products);
 
   console.log(params);
@@ -44,7 +23,8 @@ export default async function ProductPage(props: ProductPageProps) {
       <div className="grid grid-cols-4">
         {products.data.length > 0 &&
           products.data.map((product: any) => (
-            <div
+            <Link
+              href={`/product/detail/${product.id}`}
               className="text-white m-2 border-2 bg-gray-700 border-gray-800 p-4 w-fit  h-fit  rounded-xl"
               key={product.id}
             >
@@ -68,7 +48,7 @@ export default async function ProductPage(props: ProductPageProps) {
                   </button>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         {params.slug && (
           <>
